@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/photo.js": {
+      "includeFiles": "api/_assets/**"
+    }
+  }
+}

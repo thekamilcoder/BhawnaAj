@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Happy Birthday 🌹</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #e8547a;
+    --deep-rose: #c23b61;
+    --petal: #fff0f5;
+    --text: #5a2235;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Aptos', 'Segoe UI', Calibri, sans-serif;
+    font-size: 11pt;
+    background: var(--petal);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .cursive { font-family: 'Dancing Script', cursive; }
+
+  /* ========== PETALS ========== */
+  .petals-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .petal {
+    position: absolute; top: -30px;
+    background: radial-gradient(circle at 40% 35%, #f9a8c9, #e8547a88);
+    border-radius: 50% 0 50% 0;
+    opacity: 0.6;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-30px) rotate(0deg); opacity: 0.6; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ========== SCREENS ========== */
+  .screen {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .screen.active { display: flex; }
+
+  /* ========== TRANSITION OVERLAY ========== */
+  .transition-overlay {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle, #e8547a, #c23b61, #2d1520);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+  }
+  .transition-overlay.show { opacity: 1; pointer-events: all; }
+  .ov-icon { font-size: 40px; animation: spin-heart 0.8s linear infinite; }
+  @keyframes spin-heart { to { transform: rotate(360deg) scale(1.2); } }
+  .transition-overlay p { font-family: 'Dancing Script', cursive; font-size: 20pt; color: white; }
+
+  /* ========== SCREEN 1: SPLASH ========== */
+  #splash {
+    background: linear-gradient(160deg, #fff0f5 0%, #fce4ec 50%, #ffd6e7 100%);
+    padding: 20px; text-align: center;
+  }
+
+  .hearts-row {
+    font-size: 20px; letter-spacing: 6px; margin: 10px 0;
+    animation: float-hearts 3s ease-in-out infinite;
+  }
+  @keyframes float-hearts {
+    0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); }
+  }
+
+  .splash-photo-wrap { position: relative; display: inline-block; margin-bottom: 24px; }
+
+  .splash-photo {
+    width: 260px; height: 320px; object-fit: cover;
+    border-radius: 50% 50% 45% 45% / 40% 40% 60% 60%;
+    border: 4px solid var(--rose);
+    box-shadow: 0 0 40px #e8547a55, 0 8px 32px #c23b6133;
+    display: block; cursor: pointer;
+    background: linear-gradient(135deg,#fce4ec,#e8547a);
+  }
+
+  .photo-glow {
+    position: absolute; inset: -8px;
+    border-radius: 50% 50% 45% 45% / 40% 40% 60% 60%;
+    background: radial-gradient(ellipse, #e8547a22 0%, transparent 70%);
+    animation: pulse-glow 2.5s ease-in-out infinite; pointer-events: none;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.04); }
+  }
+
+  .cute-overlay {
+    position: absolute; border-radius: 50%; cursor: pointer; z-index: 10;
+    top: 15%; left: 20%; width: 60%; height: 45%; background: transparent;
+  }
+
+  .touch-hint {
+    font-size: 11pt; color: var(--rose); margin-top: 8px;
+    animation: blink 1.8s ease-in-out infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ========== SCREEN 2: LOGIN ========== */
+  #login {
+    background: linear-gradient(160deg, #fff0f5 0%, #fce4ec 60%, #ffe4f0 100%);
+    padding: 30px 20px;
+  }
+
+  .login-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid #f9a8c9;
+    border-radius: 28px;
+    padding: 36px 28px;
+    width: 100%; max-width: 360px;
+    box-shadow: 0 8px 40px #e8547a22;
+    text-align: center;
+  }
+
+  .lock-icon { font-size: 48px; margin-bottom: 10px; animation: wobble 3s ease-in-out infinite; }
+  @keyframes wobble {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); }
+  }
+
+  .login-title { font-size: 22pt; color: var(--deep-rose); margin-bottom: 4px; }
+  .login-sub { font-size: 10pt; color: #c23b6188; margin-bottom: 28px; }
+
+  .pin-groups {
+    display: flex; gap: 8px; justify-content: center;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .pin-group { display: flex; gap: 4px; }
+
+  .pin-box {
+    width: 36px; height: 44px;
+    border: 2px solid #f9a8c9; border-radius: 10px;
+    text-align: center; font-size: 14pt;
+    font-family: 'Dancing Script', cursive;
+    color: var(--deep-rose); background: #fff8fb; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    caret-color: var(--rose);
+  }
+  .pin-box:focus { border-color: var(--rose); box-shadow: 0 0 0 3px #e8547a22; }
+  .pin-box.filled { background: #fff0f5; }
+
+  .separator { font-size: 20pt; color: var(--rose); align-self: center; line-height: 44px; opacity: 0.5; }
+
+  .login-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--rose), var(--deep-rose));
+    color: white; border: none; border-radius: 16px;
+    font-size: 13pt; font-family: 'Dancing Script', cursive;
+    cursor: pointer; box-shadow: 0 4px 20px #e8547a44;
+    transition: transform 0.15s;
+  }
+  .login-btn:active { transform: scale(0.97); }
+
+  .error-msg {
+    color: #c23b61; font-size: 10pt; margin-top: 12px; min-height: 18px;
+  }
+  .shake { animation: shake 0.4s ease; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); }
+  }
+
+  /* ========== SCREEN 3: VIDEO + HELLO (post-login) ========== */
+  #intro {
+    background: linear-gradient(160deg, #fff0f5 0%, #fce4ec 50%, #ffd6e7 100%);
+    padding: 30px 20px; text-align: center;
+  }
+
+  .intro-hello {
+    font-size: 28pt; color: var(--deep-rose); margin-bottom: 6px;
+    opacity: 0; animation: fadein 0.9s ease 0.3s forwards;
+  }
+  .intro-sub {
+    font-size: 11pt; color: #e8547a99; margin-bottom: 24px;
+    opacity: 0; animation: fadein 0.9s ease 0.6s forwards;
+  }
+  @keyframes fadein { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+  .video-wrap {
+    position: relative; display: inline-block;
+    border-radius: 26px; overflow: hidden;
+    border: 3px solid var(--rose);
+    box-shadow: 0 0 40px #e8547a44, 0 8px 32px #c23b6122;
+    margin-bottom: 30px; width: 280px;
+    opacity: 0; animation: fadein 1s ease 0.9s forwards;
+  }
+
+  .video-wrap video { width: 280px; height: 380px; object-fit: cover; display: block; }
+
+  .video-placeholder {
+    width: 280px; height: 380px;
+    background: linear-gradient(135deg, #fce4ec, #e8547a33);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px; color: var(--deep-rose);
+  }
+  .video-placeholder .cam { font-size: 48px; }
+  .video-placeholder p { font-size: 10pt; color: #c23b6188; line-height: 1.6; }
+
+  .choice-btns {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+    opacity: 0; animation: fadein 0.9s ease 1.2s forwards;
+  }
+
+  .btn-hello {
+    padding: 14px 30px;
+    background: linear-gradient(135deg, var(--rose), var(--deep-rose));
+    color: white; border: none; border-radius: 50px;
+    font-size: 13pt; font-family: 'Dancing Script', cursive;
+    cursor: pointer; box-shadow: 0 4px 20px #e8547a44;
+    transition: transform 0.15s; white-space: nowrap;
+  }
+  .btn-hello:active { transform: scale(0.96); }
+
+  .btn-gussa {
+    padding: 14px 30px;
+    background: white; color: var(--rose);
+    border: 2px solid #f9a8c9; border-radius: 50px;
+    font-size: 13pt; font-family: 'Dancing Script', cursive;
+    cursor: pointer; white-space: nowrap;
+    transform-origin: center center;
+    transition: transform 0.35s cubic-bezier(.36,1.56,.64,1), opacity 0.35s ease;
+    display: inline-block;
+  }
+  .btn-gussa.s1 { transform: scale(0.72); opacity: 0.8; }
+  .btn-gussa.s2 { transform: scale(0.48); opacity: 0.6; }
+  .btn-gussa.s3 { transform: scale(0.28); opacity: 0.4; }
+  .btn-gussa.s4 { transform: scale(0.12); opacity: 0.15; }
+  .btn-gussa.s5 { transform: scale(0.01); opacity: 0; pointer-events: none; }
+
+  /* ========== SCREEN 4: BIRTHDAY PAGE ========== */
+  #main {
+    background: linear-gradient(160deg, #fff0f5 0%, #fce4ec 40%, #ffd6e7 100%);
+    padding: 0; justify-content: flex-start; overflow-y: auto;
+  }
+
+  .hero-section { width: 100%; text-align: center; padding: 40px 20px 30px; }
+
+  .confetti-burst { font-size: 28px; letter-spacing: 4px; animation: burst 0.6s ease both; }
+  @keyframes burst {
+    0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; }
+  }
+
+  .big-title {
+    font-size: 34pt; color: var(--deep-rose); line-height: 1.1;
+    margin: 12px 0 4px; text-shadow: 0 2px 16px #e8547a44;
+  }
+  .her-name {
+    font-size: 40pt; color: var(--rose); display: block;
+    animation: name-glow 2s ease-in-out infinite alternate;
+  }
+  @keyframes name-glow {
+    from { text-shadow: 0 0 10px #e8547a66; }
+    to { text-shadow: 0 0 30px #e8547aaa, 0 0 60px #e8547a44; }
+  }
+
+  .main-video-outer { position: relative; display: inline-block; margin: 20px 0; }
+
+  .main-video-wrap {
+    width: 240px; height: 280px;
+    border-radius: 50% 50% 45% 45% / 40% 40% 60% 60%;
+    overflow: hidden;
+    border: 4px solid var(--rose);
+    box-shadow: 0 0 50px #e8547a55, 0 12px 40px #c23b6133;
+  }
+  .main-video-wrap video,
+  .main-video-wrap img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+
+  .photo-frame-ring {
+    position: absolute; inset: -12px;
+    border-radius: 50% 50% 45% 45% / 40% 40% 60% 60%;
+    border: 2px dashed #e8547a55;
+    animation: spin-slow 20s linear infinite; pointer-events: none;
+  }
+  @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+  .scroll-hint {
+    text-align: center; color: var(--rose); font-size: 10pt; padding: 8px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+  .wishes-section { padding: 10px 20px 30px; width: 100%; max-width: 480px; margin: 0 auto; }
+
+  .wish-card {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(8px);
+    border: 1.5px solid #f9a8c9; border-radius: 22px;
+    padding: 22px 20px; margin-bottom: 18px;
+    box-shadow: 0 4px 20px #e8547a15;
+    position: relative; overflow: hidden;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .wish-card.visible { opacity: 1; transform: translateY(0); }
+  .wish-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--rose), transparent);
+  }
+  .wish-emoji { font-size: 28px; display: block; margin-bottom: 8px; }
+  .wish-title { font-size: 16pt; color: var(--deep-rose); margin-bottom: 8px; }
+  .wish-text { font-size: 11pt; line-height: 1.7; color: var(--text); }
+
+  .gallery-section { padding: 10px 20px 30px; width: 100%; max-width: 480px; margin: 0 auto; }
+  .gallery-title { font-size: 20pt; color: var(--deep-rose); text-align: center; margin-bottom: 16px; }
+
+  .photo-card {
+    width: 100%; border-radius: 22px; overflow: hidden;
+    margin-bottom: 18px; box-shadow: 0 8px 30px #e8547a22;
+    border: 2px solid #f9a8c955;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .photo-card.visible { opacity: 1; transform: translateY(0); }
+  .photo-card img { width: 100%; height: 260px; object-fit: cover; display: block; background: linear-gradient(135deg,#fce4ec,#e8547a33); }
+
+  .photo-caption {
+    background: rgba(255,255,255,0.9); padding: 14px 16px;
+    font-size: 11pt; color: var(--text); text-align: center;
+  }
+  .photo-caption .cap-title { font-size: 14pt; color: var(--deep-rose); display: block; margin-bottom: 4px; }
+
+  .bday-footer { text-align: center; padding: 30px 20px 50px; width: 100%; }
+  .footer-hearts {
+    font-size: 32px; letter-spacing: 8px; display: block;
+    animation: float-hearts 2s ease-in-out infinite; margin-bottom: 10px;
+  }
+  .footer-text { font-size: 14pt; color: var(--deep-rose); margin-bottom: 6px; }
+  .footer-sub { font-size: 10pt; color: #e8547a88; }
+
+  .floating-heart {
+    position: fixed; pointer-events: none; font-size: 18px;
+    animation: float-up 4s ease-in forwards; z-index: 999;
+  }
+  @keyframes float-up {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80vh) scale(0.5); }
+  }
+
+  /* ========== SECRET GATE (extra small pin layer) ========== */
+  #appWrapper {
+    transition: filter 0.7s ease;
+  }
+  #appWrapper.locked {
+    filter: blur(2.5px); /* light ~5% blur, photo still visible */
+    pointer-events: none;
+    user-select: none;
+  }
+
+  #secretGate {
+    position: fixed; left: 50%; top: 47%;
+    transform: translate(-50%, -50%);
+    z-index: 1500;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  #secretGate.hidden { display: none; }
+
+  .gate-row {
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(6px);
+    padding: 6px 7px;
+    border-radius: 14px;
+    border: 1.5px solid #f9a8c9;
+    box-shadow: 0 4px 20px #e8547a33;
+  }
+  .gate-box {
+    width: 24px; height: 30px;
+    text-align: center; font-size: 12pt;
+    border: 1.5px solid #f9a8c9; border-radius: 7px;
+    font-family: 'Dancing Script', cursive;
+    color: var(--deep-rose); background: #fff8fbdd; outline: none;
+  }
+  .gate-box:focus { border-color: var(--rose); box-shadow: 0 0 0 2px #e8547a33; }
+  .gate-box[readonly] { background: #ffe4f0aa; color: #c23b6199; }
+  .gate-enter {
+    width: 30px; height: 30px; flex-shrink: 0;
+    border: none; border-radius: 8px;
+    background: linear-gradient(135deg, var(--rose), var(--deep-rose));
+    color: white; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gate-enter:active { transform: scale(0.94); }
+  .gate-err { color: #c23b61; font-size: 9pt; margin-top: 5px; min-height: 14px; text-align: center; }
+
+</style>
+</head>
+<body>
+
+<!-- ======== SECRET GATE: small one-line pin, blurs page lightly until solved ======== -->
+<div id="secretGate">
+  <div class="gate-row">
+    <input class="gate-box" maxlength="1" value="a" readonly />
+    <input class="gate-box" maxlength="1" value="j" readonly />
+    <input class="gate-box" maxlength="1" id="g2" autocomplete="off" />
+    <input class="gate-box" maxlength="1" id="g3" autocomplete="off" />
+    <input class="gate-box" maxlength="1" value="3" readonly />
+    <input class="gate-box" maxlength="1" value="0" readonly />
+    <input class="gate-box" maxlength="1" value="@" readonly />
+    <button class="gate-enter" onclick="checkSecret()">➤</button>
+  </div>
+  <p class="gate-err" id="gateErr"></p>
+</div>
+
+<div id="appWrapper" class="locked">
+
+<div class="petals-bg" id="petals"></div>
+
+<div class="transition-overlay" id="transOverlay">
+  <span class="ov-icon">💖</span>
+  <p id="overlayText">Opening your surprise…</p>
+</div>
+
+<!-- ======== SCREEN 1: SPLASH ======== -->
+<div class="screen active" id="splash">
+  <div style="text-align:center; padding: 30px 20px;">
+    <div class="hearts-row">🌹 🤍 🌹</div>
+    <p class="cursive" style="font-size:16pt; color:var(--deep-rose); margin-bottom:20px;">
+      Someone special has a message for you…
+    </p>
+    <div class="splash-photo-wrap">
+      <div class="photo-glow"></div>
+      <!-- Replace /Bhawna_home.jpg with your photo path -->
+      <img class="splash-photo" data-protected-src="jhuka.jpg" alt="Bhawna" id="splashPhoto" />
+      <div class="cute-overlay" onclick="goToLogin()"></div>
+    </div>
+    <p class="touch-hint cursive">✨ Touch the cutest part ✨</p>
+    <p style="font-size:10pt; color:#e8547a88; margin-top:8px;">tap her face to continue</p>
+  </div>
+</div>
+
+<!-- ======== SCREEN 2: LOGIN ======== -->
+<div class="screen" id="login">
+  <div class="login-card">
+    <div class="lock-icon">🔐</div>
+    <h2 class="login-title cursive">Secret Garden</h2>
+    <p class="login-sub">Only one person holds the key…</p>
+
+    <div class="pin-groups">
+      <div class="pin-group">
+        <input class="pin-box" placeholder="2" maxlength="1" type="tel" pattern="[0-9]" id="p0" />
+        <input class="pin-box" placeholder="5" maxlength="1" type="tel" pattern="[0-9]" id="p1" />
+        <input class="pin-box" placeholder="9" maxlength="1" type="tel" pattern="[0-9]" id="p2" />
+        <input class="pin-box" placeholder="2"maxlength="1" type="tel" pattern="[0-9]" id="p3" />
+      </div>
+      <span class="separator">–</span>
+      <div class="pin-group">
+        <input class="pin-box" maxlength="1" type="tel" pattern="[0-9]" id="p4" />
+        <input class="pin-box" maxlength="1" type="tel" pattern="[0-9]" id="p5" />
+        <input class="pin-box" maxlength="1" type="tel" pattern="[0-9]" id="p6" />
+        <input class="pin-box" maxlength="1" type="tel" pattern="[0-9]" id="p7" />
+      </div>
+      <span class="separator">–</span>
+      <div class="pin-group">
+        <input class="pin-box" maxlength="1" type="tel" pattern="[0-9]" id="p8" />
+        <input class="pin-box" maxlength="1" type="tel" pattern="[0-9]" id="p9" />
+        <input class="pin-box" placeholder="7" maxlength="1" type="tel" pattern="[0-9]" id="p10" />
+        <input class="pin-box" placeholder="3" maxlength="1" type="tel" pattern="[0-9]" id="p11" />
+      </div>
+    </div>
+
+    <button class="login-btn cursive" onclick="checkLogin()">Open with Love 💖</button>
+    <p class="error-msg" id="errMsg"></p>
+  </div>
+</div>
+
+<!-- ======== SCREEN 3: VIDEO + HELLO (after correct pin) ======== -->
+<div class="screen" id="intro">
+  <h2 class="cursive intro-hello">Hello Bhawna 🌹</h2>
+  <p class="cursive intro-sub">Someone made this just for you…</p>
+
+  <div class="video-wrap">
+    <!-- Replace ./videos/bhawna_intro.mp4 with your video file path -->
+    <video id="introVideo" autoplay loop muted playsinline data-protected-src="BhAj.mp4"></video>
+    <div class="video-placeholder" id="vidPlaceholder" style="display:none;">
+      <div class="cam">🎥</div>
+      <p>Add your video at<br><strong>./videos/bhawna_intro.mp4</strong></p>
+    </div>
+  </div>
+
+  <div class="choice-btns">
+    <button class="btn-hello cursive" onclick="goToBirthday()">Hello Ajay 👋</button>
+    <button class="btn-gussa cursive" id="gussaBtn" onclick="shrinkGussa()">Gussa 😤</button>
+  </div>
+</div>
+
+<!-- ======== SCREEN 4: BIRTHDAY PAGE ======== -->
+<div class="screen" id="main">
+
+  <div class="hero-section">
+    <div class="confetti-burst">🎊 🌸 🎂 🌸 🎊</div>
+    <h1 class="big-title cursive">
+      Happy Birthday
+      <span class="her-name">Bhawna 🌹</span>
+    </h1>
+    <p style="font-size:11pt; color:#e8547a99; margin-top:6px;">20th May — A day as beautiful as you 🌷</p>
+
+    <!-- Oval hero video, no sound. Falls back to photo if video missing. -->
+    <div class="main-video-outer">
+      <div class="photo-frame-ring"></div>
+      <div class="main-video-wrap">
+        <!-- Can reuse same video: ./videos/bhawna_intro.mp4 or use a different one -->
+        <video id="mainVideo" autoplay loop muted playsinline data-protected-src="BhAj.mp4"
+               onerror="this.style.display='none'; document.getElementById('mainFallback').style.display='block';"></video>
+        <img id="mainFallback" data-protected-src="jhuka.jpg" alt="Bhawna" style="display:none;" />
+      </div>
+    </div>
+
+    <p class="scroll-hint cursive">scroll down for surprises ↓ ↓</p>
+  </div>
+
+  <div class="wishes-section">
+    <div class="wish-card">
+      <span class="wish-emoji">🌹</span>
+      <h3 class="wish-title cursive">To the one who lights up every room…</h3>
+      <p class="wish-text">
+        Happy Birthday, Bhawna! 🎂<br><br>
+        <!-- ADD YOUR WISH HERE -->
+        Happy birthday to the one who makes my world brighter, my heart fuller, and my life infinitely better. Every day with you feels like a gift, but today is extra special because it’s the day you were born. Thank you for being my partner, my best friend, and my favorite person. I love you more than words can say.</p>
+    </div>
+    <div class="wish-card">
+      <span class="wish-emoji">💌</span>
+      <h3 class="wish-title cursive">A little note from the heart…</h3>
+      <p class="wish-text">
+        <!-- ADD YOUR WISH HERE -->
+        To the one who holds my heart: Happy Birthday! I love the life we are building together and all the little moments that make us us. I hope your day is filled with as much joy, warmth, and love as you bring into my life every single day. Here’s to celebrating you today and always.</p>
+    </div>
+    <div class="wish-card">
+      <span class="wish-emoji">✨</span>
+      <h3 class="wish-title cursive">My wish for you today…</h3>
+      <p class="wish-text">
+        <!-- ADD YOUR WISH HERE -->
+       Happy birthday, my love. Looking back at everything we’ve shared, I am just so incredibly grateful to have you by my side. You inspire me every day just by being who you are. May this year bring you all the happiness, success, and love you so deeply deserve.</p>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="gallery-title cursive">Our Memories 📸</h2>
+
+    <div class="photo-card bitadded">
+      <img data-protected-src="Bhawna_home.jpg" alt="Memory" />
+      <div class="photo-caption">
+        <span class="cap-title cursive">🌸 My Cat</span>
+            When I was upset, you made me happy. You were sending weird photos. Thank YOu kid.
+      </div>
+    <div class="photo-card">
+      <img data-protected-src="BNha.jpg" alt="Memory" />
+      <div class="photo-caption">
+        <span class="cap-title cursive">🌸 A beautiful day…</span>
+            My cute baby
+      </div>
+    </div>
+    <div class="photo-card">
+      <img data-protected-src="bhawna3.jpg" alt="Memory" />
+      <div class="photo-caption">
+        <span class="cap-title cursive">💖 Always in my heart…</span>
+            This photo is special.... don't you remember ?
+      </div>
+    </div>
+    <div class="photo-card">
+      <img data-protected-src="photo_2026-05-20_00-03-13.jpg" alt="Memory" />
+      <div class="photo-caption">
+        <span class="cap-title cursive">⭐ My favourite person…</span>
+            You used to seduced me on video call
+      </div>
+    </div>
+  </div>
+
+  <div class="wishes-section">
+    <div class="wish-card" style="border-color:#f4c430; background:linear-gradient(135deg,#fff9e6,#fff0f5);">
+      <span class="wish-emoji">👑</span>
+      <h3 class="wish-title cursive" style="color:#b8860b;">You deserve the world…</h3>
+      <p class="wish-text">
+        <!-- ADD YOUR FINAL WISH / LOVE NOTE HERE -->
+        Bhawna, tum sab aachi tarh janti ho. Mai kaise hu, tumko hurt krna chahta hu ki nhi. 
+        In the end you know my true feeling......    
+      </p>
+    </div>
+  </div>
+
+  <div class="bday-footer">
+    <span class="footer-hearts">💖 🌹 💖</span>
+    <p class="footer-text cursive">Happy Birthday, Bhawna 🎂</p>
+    <p class="footer-sub">20 · May · Always 🌸</p>
+  </div>
+
+</div>
+
+</div><!-- /#appWrapper -->
+
+<script>
+  // Petals
+  const pc = document.getElementById('petals');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (4 + Math.random() * 6) + 's';
+    p.style.animationDelay = (Math.random() * 8) + 's';
+    const sz = (8 + Math.random() * 10) + 'px';
+    p.style.width = p.style.height = sz;
+    pc.appendChild(p);
+  }
+
+  // Video error → show placeholder
+  document.getElementById('introVideo').addEventListener('error', () => {
+    document.getElementById('introVideo').style.display = 'none';
+    document.getElementById('vidPlaceholder').style.display = 'flex';
+  });
+
+  // Splash photo click (whole photo also works)
+  document.getElementById('splashPhoto').addEventListener('click', goToLogin);
+
+  // SCREEN 1 → 2
+  function goToLogin() {
+    showOverlay('A little secret first…', () => {
+      switchScreen('splash', 'login');
+      setTimeout(() => document.getElementById('p0').focus(), 100);
+    });
+  }
+
+  // Pin input logic
+  const pinBoxes = document.querySelectorAll('.pin-box');
+
+  pinBoxes.forEach((box, i) => {
+    box.addEventListener('input', e => {
+      const val = e.target.value.replace(/\D/g, '');
+      box.value = val ? val[0] : '';
+      if (val && i < pinBoxes.length - 1) pinBoxes[i + 1].focus();
+      box.classList.toggle('filled', !!box.value);
+      document.getElementById('errMsg').textContent = '';
+    });
+    box.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !box.value && i > 0) {
+        pinBoxes[i - 1].focus();
+        pinBoxes[i - 1].value = '';
+        pinBoxes[i - 1].classList.remove('filled');
+      }
+    });
+  });
+
+  async function checkLogin() {
+    const entered = Array.from(pinBoxes).map(b => b.value).join('');
+    const ok = await verifyPin(entered, 'main');
+    if (ok) {
+      // SCREEN 2 → 3
+      showOverlay('🎉 Welcome in…', () => {
+        switchScreen('login', 'intro');
+        const v = document.getElementById('introVideo');
+        v.muted = true;
+        v.play().catch(() => {});
+      });
+    } else {
+      const err = document.getElementById('errMsg');
+      err.className = 'error-msg shake';
+      err.textContent = '💔 That\'s not quite right… try again';
+      setTimeout(() => err.className = 'error-msg', 500);
+      pinBoxes.forEach(b => { b.value = ''; b.classList.remove('filled'); });
+      pinBoxes[0].focus();
+    }
+  }
+
+  // Gussa shrink
+  let gussaLevel = 0;
+  function shrinkGussa() {
+    gussaLevel = Math.min(gussaLevel + 1, 5);
+    const btn = document.getElementById('gussaBtn');
+    btn.className = 'btn-gussa cursive s' + gussaLevel;
+    if (gussaLevel === 5) setTimeout(() => btn.style.display = 'none', 400);
+  }
+
+  // SCREEN 3 → 4
+  function goToBirthday() {
+    showOverlay('Opening your surprise… 🌹', () => {
+      switchScreen('intro', 'main');
+      const mv = document.getElementById('mainVideo');
+      mv.muted = true;
+      mv.play().catch(() => {});
+      startHearts();
+      initScrollReveal();
+      revealFirstCards();
+    });
+  }
+
+  // Scroll reveal
+  function initScrollReveal() {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.wish-card, .photo-card').forEach(el => obs.observe(el));
+  }
+
+  function revealFirstCards() {
+    const cards = document.querySelectorAll('.wish-card, .photo-card');
+    setTimeout(() => { if (cards[0]) cards[0].classList.add('visible'); }, 300);
+    setTimeout(() => { if (cards[1]) cards[1].classList.add('visible'); }, 700);
+  }
+
+  // Floating hearts
+  function spawnHeart() {
+    const h = document.createElement('div');
+    h.className = 'floating-heart';
+    h.textContent = ['💖','🌹','💕','✨','💗','🌸'][Math.floor(Math.random() * 6)];
+    h.style.left = Math.random() * 90 + '%';
+    h.style.bottom = '10%';
+    h.style.animationDuration = (3 + Math.random() * 2) + 's';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 5000);
+  }
+  function startHearts() { spawnHeart(); setInterval(spawnHeart, 1800); }
+
+  // Overlay helper
+  function showOverlay(text, cb) {
+    const ov = document.getElementById('transOverlay');
+    document.getElementById('overlayText').textContent = text;
+    ov.classList.add('show');
+    setTimeout(() => { cb(); ov.classList.remove('show'); }, 1200);
+  }
+
+  function switchScreen(from, to) {
+    document.getElementById(from).classList.remove('active');
+    document.getElementById(to).classList.add('active');
+  }
+
+  // ===== Secret gate (small one-line pin before the whole site unblurs) =====
+  const gateBoxes = document.querySelectorAll('.gate-box');
+  const gateFillBoxes = [document.getElementById('g2'), document.getElementById('g3')];
+
+  gateFillBoxes.forEach((box, i) => {
+    box.addEventListener('input', e => {
+      const val = e.target.value;
+      box.value = val ? val[0] : '';
+      if (val && i < gateFillBoxes.length - 1) gateFillBoxes[i + 1].focus();
+      document.getElementById('gateErr').textContent = '';
+    });
+    box.addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkSecret();
+      if (e.key === 'Backspace' && !box.value && i > 0) gateFillBoxes[i - 1].focus();
+    });
+  });
+
+  // Ask the server to verify a PIN. The correct value never ships to the browser —
+  // /api/unlock checks it server-side and sets an httpOnly session cookie on success.
+  async function verifyPin(pin, gate) {
+    try {
+      const resp = await fetch('/api/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ pin, gate }),
+      });
+      if (!resp.ok) return false;
+      const data = await resp.json();
+      return !!data.ok;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Fetch every protected photo/video only after the server has confirmed the session,
+  // then swap it into the page via a blob URL (nothing is ever public before this point).
+  async function loadProtectedMedia() {
+    const els = document.querySelectorAll('[data-protected-src]');
+    await Promise.all(Array.from(els).map(async el => {
+      const name = el.getAttribute('data-protected-src');
+      try {
+        const resp = await fetch('/api/photo?name=' + encodeURIComponent(name), { credentials: 'include' });
+        if (!resp.ok) return;
+        const blob = await resp.blob();
+        el.src = URL.createObjectURL(blob);
+        if (el.tagName === 'VIDEO') el.load();
+      } catch (e) {
+        // leave element without a src on failure
+      }
+    }));
+  }
+
+  async function checkSecret() {
+    const entered = Array.from(gateBoxes).map(b => b.value).join('');
+    const ok = await verifyPin(entered, 'secret');
+    if (ok) {
+      document.getElementById('appWrapper').classList.remove('locked');
+      document.getElementById('secretGate').classList.add('hidden');
+      loadProtectedMedia();
+    } else {
+      const row = document.querySelector('.gate-row');
+      const err = document.getElementById('gateErr');
+      row.classList.add('shake');
+      err.textContent = '💔 try again';
+      setTimeout(() => row.classList.remove('shake'), 400);
+      gateFillBoxes.forEach(b => b.value = '');
+      gateFillBoxes[0].focus();
+    }
+  }
+</script>
+</body>
+</html>
